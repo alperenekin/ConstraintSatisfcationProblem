@@ -1,0 +1,7 @@
+if breeds=greatDane then years=2006
+years(owners=Barbara) = years(breeds=pekingese) + 2
+years(dogs=Molly) = years(breeds=pekingese) + 1
+years(dogs=Riley) > years(dogs=Harley)
+if owners=Douglas then not dogs=Harley
+years(owners=Anita) = years(dogs=Shadow) + 2
+if dogs=Riley then either owners=Douglas or breeds=bulldog

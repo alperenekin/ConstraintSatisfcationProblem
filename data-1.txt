@@ -1,0 +1,4 @@
+years,2006,2007,2008,2009
+owners,Anita,Barbara,Douglas,Fernando
+breeds,bulldog,dalmatian,greatDane,pekingese
+dogs,Harley,Molly,Riley,Shadow

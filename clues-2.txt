@@ -1,0 +1,9 @@
+years(hometowns=ChulaVista) = years(teams=Indians) - 1
+if teams=Tigers then not players=Steven
+if hometowns=Quimby then not players=Steven
+if teams=Tigers then not hometowns=Quimby
+years(hometowns=York) = years(players=Steven) + 1
+if years=2008 then hometowns=Quimby
+years(hometowns=Ravendale) > years(players=Lonnie)
+if hometowns=Ravendale then either teams=Tigers or players=Delbert
+one of {players=Lonnie,players=Steven} corresponds to years=2006 other teams=Dodgers

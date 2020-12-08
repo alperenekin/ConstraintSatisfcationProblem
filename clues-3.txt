@@ -1,0 +1,7 @@
+if sailors=WendellOrr then boatTypes=pilotCutter
+days(boats=BayHawk) = days(boatTypes=pilotCutter) - 4
+{boats=AlphaOne,sailors=VickyEstes,sailors=TaraCarroll} are all different
+{days=282,sailors=VickyEstes,boatTypes=pilotCutter} are all different
+days(boatTypes=catamaran) = days(boats=WaveDancer) - 4
+one of {sailors=DebraDecker,days=270} corresponds to boats=BayHawk other boatTypes=schooner
+if boatTypes=sloop then either days=282 or boats=AlphaOne

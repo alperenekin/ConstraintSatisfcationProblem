@@ -1,0 +1,4 @@
+days,270,274,278,282
+sailors,DebraDecker,TaraCarroll,VickyEstes,WendellOrr
+boatTypes,catamaran,pilotCutter,schooner,sloop
+boats,AlphaOne,BayHawk,Confluence,WaveDancer
