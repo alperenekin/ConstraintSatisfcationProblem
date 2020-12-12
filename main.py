@@ -1,105 +1,95 @@
+import copy
+
+from fileReader import FileReader
 
 if __name__ == '__main__':
 
     # her CSP Node satranc tahtasinin o anki durumunu tutar. Tepedeki CSPNode bos bir tahtayi ifade eder
     class CSPNode:  # agac yapisi icinde bir dugum
-        def __init__(self):
+        def __init__(self, domain):
             self.parent = None  # ebeveyni
             self.children = []  # cocuklarinin listesi
-            self.assignment = []  # o anki satranc tahtasi durumu # 0. eleman birinci satirda hangi sutunda vezir oldugunu ifade eder
+            self.domain = domain
+            self.answer = []  # o anki satranc tahtasi durumu # 0. eleman birinci satirda hangi sutunda vezir oldugunu ifade eder
 
         def addChildren(self, childNode):
             childNode.setParent(self)  # dugume bir cocuk eklendiginde cocugunun ebeveyni olarak bu dugumu ata
             self.children.append(childNode)  # dugumu cocuklar listesine ekle
 
         def setParent(self, parentNode):  # ebeveyn ata
-            self.assignment.extend(parentNode.assignment)  # ebeveyn atadiginda ebeveynin o anki atama durumunu al
+            # self.domain.extend(parentNode.assignment)  # ebeveyn atadiginda ebeveynin o anki atama durumunu al
             self.parent = parentNode  # ebeveyn degiskenini ata
 
         def assign(self, value):  # siradaki satirin value sutununa vezir koy
-            self.assignment.append(value)
+            self.domain.append(value)
 
-        def getAssignments(self):
-            return self.assignment
+        def setDomain(self, domain):
+            self.domain = domain
+
+        def getDomains(self):
+            return self.domains
 
         def getChildren(self):
             return self.children
 
 
     class CSPPRoblem:
-        def __init__(self, variable_number, domain, constraintFunctionGlobal):
-            self.rootNode = CSPNode()  # bos bir satranc tahtasi
-            self.variable_number = variable_number  # degisken sayisi
-            self.domain = domain  # domain: degiskenlerin alabilecegi deger listesi
-            self.g_func = constraintFunctionGlobal  # sinirlayici fonksiyon
+        def __init__(self, constraints):
+            fileReader = FileReader()
+            data1 = fileReader.readDataFile("data-1.txt")
+            domains = []
+            for i in range(4):
+                copyData1 = copy.deepcopy(data1)
+                dict = {
+                    copyData1[0][0]: copyData1[0][1:],
+                    copyData1[1][0]: copyData1[1][1:],
+                    copyData1[2][0]: copyData1[2][1:],
+                    copyData1[3][0]: copyData1[3][1:],
+                }
+                domains.append(dict)
+
+            answer = {
+                data1[0][0]: ["2006", "", "", ""],
+                data1[1][0]: ["", "", "", ""],
+                data1[2][0]: ["greatDane", "", "", ""],
+                data1[3][0]: ["", "", "", ""]
+            }
+            self.rootNode = CSPNode(domains)  # bos bir satranc tahtasi
+            self.constraints = constraints
 
         def solveCSP(self):
             self._solve(self.rootNode)
             return self.rootNode
 
         def _solve(self, node):
-            for value in domain:  # domaindeki her deger icin
-                if self.g_func(node.getAssignments(), value):  # bu atama mumkun mu?
-                    newNode = CSPNode()  # mumkun olan atamalar icin yeni dugumler olustur
-                    node.addChildren(newNode)  # su an uzerinde calistigimiz dugumun cocugu olarak ekle
-                    newNode.assign(value)  # yeni dugumde mumkun olan atamayı gerceklestir
-                    self._solve(newNode)  # olusan yeni dugum icin yeni cozumler ara
+            newNode = CSPNode(node.domain)
+            domainCount = 0
+            for dictionaryDomain in newNode.domain:  # domaindeki her deger icin
+                for subject in dictionaryDomain:
+                    for values in dictionaryDomain[subject]:
+                        self.restrictDomain(newNode.domain, values, subject, domainCount)
+                domainCount += 1
+
+        def restrictDomain(self,nodeDomain, value, subject, domainCount):
+            count = 0
+            for dictionaryDomain in nodeDomain:
+                if (count != domainCount): #domain count represent the domain which i assign the value
+                    if(value in dictionaryDomain[subject]): #if value exist in domain, delete it
+                        dictionaryDomain[subject].remove(value)
+                else:
+                    for i in range(len(dictionaryDomain[subject]) - 1, -1, -1):
+                        if dictionaryDomain[subject][i] != value:
+                            del dictionaryDomain[subject][i]
+                count += 1
+                    # for element in dictionaryDomain[subject]:
+                    #     if(element != value):
+                    #         dictionaryDomain[subject].remove(element)
 
 
-    n = 8  # kaclik satranc tahtasi
-    domain = range(n)
+    # yeni node yaratıp, ona bir domain ve keyleri pasladı
+    # Her bir subjecti dönüyor, mesela ilk years geldi ve onun ilk elemanını domainden sildi
 
-
-    def globalConstraint(prevAssign, newlyAssigned):
-        column_constraint = not newlyAssigned in prevAssign  # prevAssign listesi icinde newlyAssigned varsa False yoksa True dondur
-        diagonal_constraint = True
-        indexToAssign = len(prevAssign)  # yeni degerin indeksi
-        for idx, prev in enumerate(prevAssign):
-            # caprazlik kontrolu indexToAssign, newlyAssigned, idx ve prev arasinda gerseklesecek
-            # bunu butun atanmis taslar icin yapacagimiz icin dongu kurduk
-            if abs(newlyAssigned - prev) - abs(indexToAssign - idx) == 0:
-                diagonal_constraint = False
-        return column_constraint and diagonal_constraint
-
-
-    csp = CSPPRoblem(n, domain, globalConstraint)
+    fileReader = FileReader()
+    array = fileReader.readClueFile("clues-1.txt")
+    csp = CSPPRoblem(array)
     rn = csp.solveCSP()
-
-    solution = []
-
-
-    def traverseNode(node):
-        assg = node.getAssignments()  # butun dugumler icin satranc tahtasinin o anki durumunu al
-        if len(assg) == n:
-            solution.append(assg)  # eger 8 elemanli bir atamysa bu biz cozumdur
-        for childNode in node.getChildren():
-            traverseNode(childNode)  # cocuk dugumleri dolas
-
-
-    traverseNode(rn)
-
-    print(len(solution))
-
-
-    # 92
-
-    def visualize(arr):
-        from pprint import pprint
-        str_list = [[" " for k in range(len(arr))] for i in range(len(arr))]
-        for idx, element in enumerate(arr):
-            str_list[idx][element] = "V"
-        pprint(str_list)
-
-
-    visualize(solution[1])
-    # Cikti
-    """
-    [['V', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-     [' ', ' ', ' ', ' ', ' ', 'V', ' ', ' '],
-     [' ', ' ', ' ', ' ', ' ', ' ', ' ', 'V'],
-     [' ', ' ', 'V', ' ', ' ', ' ', ' ', ' '],
-     [' ', ' ', ' ', ' ', ' ', ' ', 'V', ' '],
-     [' ', ' ', ' ', 'V', ' ', ' ', ' ', ' '],
-     [' ', 'V', ' ', ' ', ' ', ' ', ' ', ' '],
-     [' ', ' ', ' ', ' ', 'V', ' ', ' ', ' ']]
-     """

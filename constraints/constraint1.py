@@ -5,9 +5,8 @@ class Constraint1:  # agac yapisi icinde bir dugum
         self.y = y
         self.b = b
 
-    def constraintFunction(self):
-        if self.x == self.x:
-            self.y = self.b
-
-    def getB(self):
-        print(self.y)
+    def constraintFunction(self, dictionary):
+        if self.a in dictionary[self.x]:  # == yap
+            indexOfa = dictionary[self.x].index(self.a)
+            if (self.b == dictionary[self.y][indexOfa]):
+                print("true")
