@@ -15,10 +15,10 @@ class Constraint3(BaseConstraint):  # if x=a then either y=b or z=c
         secondOption = domains[domainIndex][self.y]
         thirdOption = domains[domainIndex][self.z]
 
-        if (len(firstOption) == 1 and self.a == firstOption[0]):  # TODO try if self.b ==firstOption[0] this only enough
-            if (self.b not in secondOption and self.c not in thirdOption):
-                print("false")
+        if len(firstOption) == 1 and self.a == firstOption[0]:  # TODO try if self.b ==firstOption[0] this only enough
+            if self.b not in secondOption and self.c not in thirdOption:
+                print("constraint 3 false")
                 return False
 
-        print("true")
+        print("constraint 3 true")
         return True

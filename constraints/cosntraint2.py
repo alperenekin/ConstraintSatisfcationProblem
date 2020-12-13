@@ -14,9 +14,9 @@ class Constraint2(BaseConstraint):  # if x=a then not y=b
 
         if len(firstOption) == 1 and self.a == firstOption[0]:  # TODO try if self.b ==firstOption[0] this only enough
             if (len(secondOption)) == 1 and self.b == secondOption[0]:
-                print("false")
+                print("constraint 2 false")
                 return False
 
-        print("true")
+        print("constraint 2 trye")
         return True
 

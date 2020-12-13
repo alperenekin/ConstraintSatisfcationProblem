@@ -11,17 +11,22 @@ class Constraint4(BaseConstraint):  #  n(x=a) = n(y=b) + m
         self.n = n
         self.m = m
 
-    def constraintFunction(self, domains):
+    def constraintFunction(self, domains,index):
         for i in range(len(domains)):
-            if self.a in domains[i][self.x]:
-
-
-
-        if (len(firstOption) == 1 and self.a == firstOption[0]):  # TODO try if self.b ==firstOption[0] this only enough
-            if (self.b not in secondOption and self.c not in thirdOption):
-                print("false")
-                return False
-
-        print("true")
+            domainOfX = domains[i][self.x]
+            if self.a in domainOfX:
+                if len(domainOfX) == 1 and  self.a in domainOfX:
+                    year = domains[i][self.n]
+                    if len(year) == 1:
+                        for j in range(len(domains)):
+                            domainOfY = domains[j][self.y]
+                            if self.b in domainOfY:
+                                if i != j:
+                                    second_year = domains[j][self.n]
+                                    for second in second_year:
+                                        if int(year[0]) != int(second) + int(self.m):  # if year of first not greater than second then it is false
+                                            print("cosntraint 4 false")
+                                            return False
+        print("cosntraint 4 true")
         return True
 
