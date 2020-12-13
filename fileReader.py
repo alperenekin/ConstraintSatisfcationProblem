@@ -2,6 +2,11 @@ from constraints.constraint1 import Constraint1
 import copy
 
 from constraints.constraint3 import Constraint3
+from constraints.constraint4 import Constraint4
+from constraints.constraint5 import Constraint5
+from constraints.constraint6 import Constraint6
+from constraints.constraint7 import Constraint7
+from constraints.constraint8 import Constraint8
 from constraints.cosntraint2 import Constraint2
 
 
@@ -11,6 +16,7 @@ class FileReader:
         file1 = open(fileName, 'r')
         Lines = file1.readlines()
         for line in Lines:
+            line = line.rstrip("\n")
             fields = line.split(',')
             datas.append(fields)
         return datas
@@ -56,15 +62,84 @@ class FileReader:
                     constraintObjects.append(constraint)
 
             else:
-                if len(fields) < 6:
+                if len(fields) < 6 and fields[0][0] != "{":
                     if fields[1] == "=":
-                        print("rule4 , rule 5, rule6")
+                        new_fields = fields[0].split('(')
+                        n = new_fields[0]
+                        second_fields = new_fields[1].split("=")
+                        x = second_fields[0]
+                        a = second_fields[1].split(")")[0]
+                        third_fields = fields[2].split("(")
+                        fourth_fields = third_fields[1].split("=")
+                        y = fourth_fields[0]
+                        b = fourth_fields[1].split(")")[0]
+                        if len(fields) == 5:
+                            m = fields[4]
+                            constraint = Constraint4(x, a, y, b, n, m)  # n(x=a) = n(y=b) +m/-m
+                            constraintObjects.append(constraint)
+                        else:
+                            constraint = Constraint4(x, a, y, b, n, 0)  # n(x=a) = n(y=b)
+                            constraintObjects.append(constraint)
                     if fields[1] == ">":
-                        print("rule 7")
+                        new_fields = fields[0].split('(')
+                        n = new_fields[0]
+                        second_fields = new_fields[1].split("=")
+                        x = second_fields[0]
+                        a = second_fields[1].split(")")[0]
+                        third_fields = fields[2].split("(")
+                        fourth_fields = third_fields[1].split("=")
+                        y = fourth_fields[0]
+                        b = fourth_fields[1].split(")")[0]
+                        constraint = Constraint5(x, a, y, b, n)
+                        constraintObjects.append(constraint)
                     if fields[1] == "<":
-                        print("rule 8")
+                        new_fields = fields[0].split('(')
+                        n = new_fields[0]
+                        second_fields = new_fields[1].split("=")
+                        x = second_fields[0]
+                        a = second_fields[1].split(")")[0]
+                        third_fields = fields[2].split("(")
+                        fourth_fields = third_fields[1].split("=")
+                        y = fourth_fields[0]
+                        b = fourth_fields[1].split(")")[0]
+                        constraint = Constraint6(x, a, y, b, n)
+                        constraintObjects.append(constraint)
                 else:
-                    print("rule 9 -10")
+                    if len(fields) == 8:
+                        first_field = fields[2]
+                        first_field = first_field.replace("{", "")
+                        first_field = first_field.replace("}", "")
+                        second_field = first_field.split(",")
+                        third_field = second_field[0].split("=")
+                        x = third_field[0]
+                        a = third_field[1]
+                        fourth_field = second_field[1].split("=")
+                        y = fourth_field[0]
+                        b = fourth_field[1]
+                        fifth_field = fields[5].split("=")
+                        z = fifth_field[0]
+                        c = fifth_field[1]
+                        sixth_field = fields[7].split("=")
+                        t = sixth_field[0]
+                        d = sixth_field[1]
+                        constraint = Constraint7(x, a, y, b, z, c, t, d)
+                        constraintObjects.append(constraint)
+                    else:
+                        first_field = fields[0]
+                        first_field = first_field.replace("{", "")
+                        first_field = first_field.replace("}", "")
+                        first_field = first_field.split(",")
+                        second_field = first_field[0].split("=")
+                        x = second_field[0]
+                        a = second_field[1]
+                        third_field = first_field[1].split("=")
+                        y = third_field[0]
+                        b = third_field[1]
+                        fourth_field = first_field[2].split("=")
+                        z = fourth_field[0]
+                        c = fourth_field[1]
+                        # constraint = Constraint8(x, a, y, b, z, c)
+                        # constraintObjects.append(constraint)
         return constraintObjects
 
 
@@ -89,11 +164,13 @@ if __name__ == '__main__':
         data1[3][0]: ["", "", "", ""]
     }
 
-    domains[0]["owners"] = ["Fernando"]
+    domains[0]["owners"] = ["Barbara"]
     domains[0]["dogs"] = ["Riley"]
-    domains[0]["breeds"] = ["greatDane", "dalmatian"]
+    domains[0]["years"] = ["2006"]
+    domains[1]["dogs"] = ["Harley"]
+    domains[1]["years"] = ["2007"]
 
-    constraints = fileReader.readClueFile("clues-1.txt")
+    constraints = fileReader.readClueFile("clues-2.txt")
 
     for constraint in constraints:
         constraint.constraintFunction(domains, 0)

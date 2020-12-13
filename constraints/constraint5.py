@@ -11,7 +11,7 @@ class Constraint5:  #  n(x=a) > n(y=b)
         for i in range(len(domains)):
             domainOfX = domains[i][self.x]
             if self.a in domainOfX:
-                if len(domainOfX) == 1 and self.a in domainOfX:
+                if len(domainOfX) == 1:
                     year = domains[i][self.n]
                     if len(year) == 1:
                         for j in range(len(domains)):
