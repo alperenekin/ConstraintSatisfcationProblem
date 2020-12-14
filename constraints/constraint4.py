@@ -21,14 +21,15 @@ class Constraint4(BaseConstraint):  #  n(x=a) = n(y=b) + m
                         for j in range(len(domains)):
                             domainOfY = domains[j][self.y]
                             if self.b in domainOfY and len(domainOfY) == 1:
-                                second_year = domains[j][self.n]
-                                if year[0] == second_year[0]: # can not belong to same subject
-                                    return False
-                                else:
-                                    for second in second_year:
-                                        if int(year[0]) != int(second) + int(self.m):  # if year of first not greater than second then it is false
-                                            print("cosntraint 4 false")
+                                if i != j:
+                                    second_year = domains[j][self.n]
+                                    for year2 in second_year:
+                                        if int(year[0]) != int(year2) + self.m:  # if year of first not greater than second then it is false
                                             return False
-        print("cosntraint 4 true")
+                                else:
+                                    second_year = domains[j][self.n]
+                                    if year[0] == second_year[0]:
+                                        return False
         return True
+
 

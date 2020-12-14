@@ -1,4 +1,5 @@
 import copy
+import sys
 
 from fileReader import FileReader
 
@@ -15,9 +16,14 @@ if __name__ == '__main__':
 
 
     class CSPPRoblem:
-        def __init__(self):
+        file1 = ""
+        file2 = ""
+        def __init__(self,optionNumber):
             fileReader = FileReader()
-            data1 = fileReader.readDataFile("data-2.txt")
+            self.chooseFile(optionNumber)
+            data1 = fileReader.readDataFile(self.file1)
+            self.constraints = fileReader.readClueFile(self.file2)
+
             domains = []
             for i in range(4):
                 copyData1 = copy.deepcopy(data1)
@@ -29,8 +35,18 @@ if __name__ == '__main__':
                 }
                 domains.append(dict)
 
-            self.rootNode = CSPNode(domains)  # bos bir satranc tahtasi
-            self.constraints = fileReader.readClueFile("clues-2.txt")
+            self.rootNode = CSPNode(domains)
+
+        def chooseFile(self,optionNumber):
+            if optionNumber == "1":
+                self.file1 = "data-1.txt"
+                self.file2 = "clues-1.txt"
+            elif optionNumber == "2":
+                self.file1 = "data-2.txt"
+                self.file2 = "clues-2.txt"
+            elif optionNumber == "3":
+                self.file1 = "data-3.txt"
+                self.file2 = "clues-3.txt"
 
         def isAllDomainsHaveOneElement(self, node):
             for dictionaryDomain in node.domain:  # domaindeki her deger icin
@@ -41,13 +57,13 @@ if __name__ == '__main__':
 
         def isSolved(self, node):
             if self.isAllDomainsHaveOneElement(node) and self.checkConstraints(node.domain): # to check if answer passes from constraints
-                print(node.domain)
-                self.checkConstraints(node.domain)
-                print("true")
+                self.printResult(node.domain)
+                sys.exit()
+                return node.domain
 
         def solveCSP(self):
-            self._solve(self.rootNode)
-            return self.rootNode
+            return self._solve(self.rootNode)
+
 
         def _solve(self, node):
             self.isSolved(node)
@@ -64,9 +80,9 @@ if __name__ == '__main__':
                                 self.restrictDomain(childNode.domain, values, subject, domainCount)
                                 self._solve(childNode)
                             if elementCount == len(dictionaryDomain[subject]):
-                                return False
+                                return
                 domainCount += 1
-            return False
+            return
 
         def restrictDomain(self, nodeDomain, value, subject, domainCount):
             count = 0
@@ -89,6 +105,18 @@ if __name__ == '__main__':
 
             return True
 
+        def printResult(self,domain):
+            keys = domain[0].keys()
+            for key in keys:
+                print(key,end="  |  ")
+            print("\n-----------------------")
+            for subject in domain:
+                for subjectKeys in subject.keys():
+                    print(subject[subjectKeys][0], end=" | ")
+                print("\n")
 
-    csp = CSPPRoblem()
-    rn = csp.solveCSP()
+    print("The problems available in this directory: 1 2 3")
+    input_no = input("Choose a problem: ")
+    csp = CSPPRoblem(input_no)
+    print("Here is the solution to the problem defined")
+    csp.solveCSP()

@@ -12,14 +12,11 @@ class Constraint1(BaseConstraint):
         firstOption = domains[domainIndex][self.x]
         secondOption = domains[domainIndex][self.y]
 
-        if len(firstOption) == 1 and self.a == firstOption[0]:  # TODO try if self.b ==firstOption[0] this only enough
+        if len(firstOption) == 1 and self.a == firstOption[0]: # check if "a" selected
             if self.b not in secondOption:
-                print("constraint 1 false")
                 return False
         else:
-            if len(secondOption) == 1 and self.b == secondOption[0]:
+            if len(secondOption) == 1 and self.b == secondOption[0]: # check if "b" selected
                 if self.a not in firstOption:
-                    print("constraint 1 false")
                     return False
-        print("constraint 1 true")
         return True

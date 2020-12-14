@@ -21,8 +21,6 @@ class Constraint5:  #  n(x=a) > n(y=b)
                                     second_year = domains[j][self.n]
                                     for second in second_year:
                                         if int(year[0]) <= int(second): #if year of first not greater than second then it is false
-                                            print("cosntraint 5 false")
                                             return False
-        print("cosntraint 5 true")
         return True
 

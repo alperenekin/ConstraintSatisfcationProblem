@@ -1,5 +1,4 @@
 from constraints.constraint1 import Constraint1
-import copy
 
 from constraints.constraint3 import Constraint3
 from constraints.constraint4 import Constraint4
@@ -28,8 +27,8 @@ class FileReader:
         for line in lines:
             line = line.rstrip("\n")
             fields = line.split(' ')
-            if fields[0] == "if":
-                if len(fields) == 4:
+            if fields[0] == "if": # for the ones start with if
+                if len(fields) == 4: #if x=a then y=b
                     new_fields = fields[1].split('=')
                     x = new_fields[0]
                     a = new_fields[1]
@@ -37,9 +36,8 @@ class FileReader:
                     y = new_fields2[0]
                     b = new_fields2[1]
                     constraint = Constraint1(x, a, y, b)
-                    # constraint.constraintFunction(dict)
                     constraintObjects.append(constraint)
-                elif len(fields) == 5:
+                elif len(fields) == 5: #if x=a then not y=b
                     new_fields = fields[1].split('=')
                     x = new_fields[0]
                     a = new_fields[1]
@@ -48,7 +46,7 @@ class FileReader:
                     b = new_fields2[1]
                     constraint = Constraint2(x, a, y, b)
                     constraintObjects.append(constraint)
-                elif len(fields) == 7:
+                elif len(fields) == 7: #if x=a then either y=b or z=c
                     new_fields = fields[1].split('=')
                     x = new_fields[0]
                     a = new_fields[1]
@@ -74,13 +72,18 @@ class FileReader:
                         y = fourth_fields[0]
                         b = fourth_fields[1].split(")")[0]
                         if len(fields) == 5:
-                            m = fields[4]
-                            constraint = Constraint4(x, a, y, b, n, m)  # n(x=a) = n(y=b) +m/-m
-                            constraintObjects.append(constraint)
+                            if fields[3] == "-":
+                                m = fields[4]
+                                constraint = Constraint4(x, a, y, b, n, (-1 * int(m)))  # n(x=a) = n(y=b) +m/-m
+                                constraintObjects.append(constraint)
+                            else:
+                                m = fields[4]
+                                constraint = Constraint4(x, a, y, b, n, int(m))  # n(x=a) = n(y=b) +m/-m
+                                constraintObjects.append(constraint)
                         else:
                             constraint = Constraint4(x, a, y, b, n, 0)  # n(x=a) = n(y=b)
                             constraintObjects.append(constraint)
-                    if fields[1] == ">":
+                    if fields[1] == ">": # n(x=a) > n(y=b)
                         new_fields = fields[0].split('(')
                         n = new_fields[0]
                         second_fields = new_fields[1].split("=")
@@ -92,7 +95,7 @@ class FileReader:
                         b = fourth_fields[1].split(")")[0]
                         constraint = Constraint5(x, a, y, b, n)
                         constraintObjects.append(constraint)
-                    if fields[1] == "<":
+                    if fields[1] == "<": #n(x=a) < n(y=b)
                         new_fields = fields[0].split('(')
                         n = new_fields[0]
                         second_fields = new_fields[1].split("=")
@@ -104,7 +107,7 @@ class FileReader:
                         b = fourth_fields[1].split(")")[0]
                         constraint = Constraint6(x, a, y, b, n)
                         constraintObjects.append(constraint)
-                else:
+                else: #one of {x=a,y=b} corresponds to z=c other t=d
                     if len(fields) == 8:
                         first_field = fields[2]
                         first_field = first_field.replace("{", "")
@@ -124,7 +127,7 @@ class FileReader:
                         d = sixth_field[1]
                         constraint = Constraint7(x, a, y, b, z, c, t, d)
                         constraintObjects.append(constraint)
-                    else:
+                    else:   #{x=a,y=b,z=c} are all different
                         first_field = fields[0]
                         first_field = first_field.replace("{", "")
                         first_field = first_field.replace("}", "")
@@ -138,39 +141,6 @@ class FileReader:
                         fourth_field = first_field[2].split("=")
                         z = fourth_field[0]
                         c = fourth_field[1]
-                        # constraint = Constraint8(x, a, y, b, z, c)
-                        # constraintObjects.append(constraint)
+                        constraint = Constraint8(x, a, y, b, z, c)
+                        constraintObjects.append(constraint)
         return constraintObjects
-
-
-if __name__ == '__main__':
-    fileReader = FileReader()
-    data1 = fileReader.readDataFile("data-1.txt")
-    domains = []
-    for i in range(4):
-        copyData1 = copy.deepcopy(data1)
-        dict = {
-            copyData1[0][0]: copyData1[0][1:],
-            copyData1[1][0]: copyData1[1][1:],
-            copyData1[2][0]: copyData1[2][1:],
-            copyData1[3][0]: copyData1[3][1:],
-        }
-        domains.append(dict)
-
-    answer = {
-        data1[0][0]: ["2006", "", "", ""],
-        data1[1][0]: ["", "", "", ""],
-        data1[2][0]: ["greatDane", "", "", ""],
-        data1[3][0]: ["", "", "", ""]
-    }
-
-    domains[0]["owners"] = ["Barbara"]
-    domains[0]["dogs"] = ["Riley"]
-    domains[0]["years"] = ["2006"]
-    domains[1]["dogs"] = ["Harley"]
-    domains[1]["years"] = ["2007"]
-
-    constraints = fileReader.readClueFile("clues-2.txt")
-
-    for constraint in constraints:
-        constraint.constraintFunction(domains, 0)
