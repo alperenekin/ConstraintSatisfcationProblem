@@ -19,7 +19,7 @@ class Constraint3(BaseConstraint):  # if x=a then either y=b or z=c
             if self.b not in secondOption and self.c not in thirdOption:
                 return False
 
-            if len(secondOption) == 1 and len(thirdOption) == 1: # "a" 
+            if len(secondOption) == 1 and len(thirdOption) == 1: # " both b and c cant be at the same time
                 if self.b == secondOption[0] and self.c == thirdOption[0]:
                     return False
 

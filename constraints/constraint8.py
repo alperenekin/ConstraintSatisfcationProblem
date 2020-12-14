@@ -11,13 +11,13 @@ class Constraint8:  #  {x=a,y=b,z=c} are all different
 
     def constraintFunction(self, domains,index):
         for subject in domains:
-            if self.a in subject[self.x] and len(subject[self.x]) == 1:
+            if self.a in subject[self.x] and len(subject[self.x]) == 1: #if a = b then false
                 if self.b in subject[self.y] and len(subject[self.y]) == 1:
                     return False
-                if self.c in subject[self.z] and len(subject[self.z]) == 1:
+                if self.c in subject[self.z] and len(subject[self.z]) == 1: #if a = c then false
                     return False
 
-            if self.b in subject[self.y] and len(subject[self.y]) == 1:
+            if self.b in subject[self.y] and len(subject[self.y]) == 1: #if b = c then false
                 if self.c in subject[self.z] and len(subject[self.z]) == 1:
                     return False
         return True
